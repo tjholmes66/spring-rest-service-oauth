@@ -16,15 +16,17 @@
 
 package hello;
 
-import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
 
-public class WebInitializer extends org.springframework.boot.web.servlet.support.SpringBootServletInitializer
+@SpringBootApplication
+@ComponentScan("hello")
+public class SpringSecurityApplication
 {
 
-    @Override
-    protected SpringApplicationBuilder configure(SpringApplicationBuilder application)
+    public static void main(String[] args)
     {
-        return application.sources(SpringSecurityApplication.class);
+        SpringApplication.run(SpringSecurityApplication.class, args);
     }
-
 }

@@ -1,3 +1,18 @@
+/*
+ * Copyright 2014 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package hello;
 
@@ -8,7 +23,6 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -19,11 +33,9 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.SpringBootConfiguration;
-import org.springframework.context.annotation.ComponentScan;
+import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
+import org.springframework.security.web.FilterChainProxy;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -31,47 +43,48 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.util.Base64Utils;
 import org.springframework.web.context.WebApplicationContext;
 
+/**
+ * @author Roy Clarkson
+ */
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@ComponentScan(basePackages =
-{ "hello" })
-@SpringBootConfiguration
-public class GreetingControllerTest
-{
+@SpringApplicationConfiguration(classes = Application.class)
+public class GreetingControllerTest {
 
-    @Autowired
-    WebApplicationContext context;
+	@Autowired
+	WebApplicationContext context;
 
-    @InjectMocks
-    GreetingController controller;
+	@Autowired
+	private FilterChainProxy springSecurityFilterChain;
 
-    private MockMvc mvc;
+	@InjectMocks
+	GreetingController controller;
 
-    @Before
-    public void setUp()
-    {
-        MockitoAnnotations.initMocks(this);
-        mvc = MockMvcBuilders.webAppContextSetup(context).alwaysDo(print()).apply(SecurityMockMvcConfigurers.springSecurity()).build();
-    }
+	private MockMvc mvc;
 
-    @WithMockUser
-    @Test
-    public void greetingUnauthorized() throws Exception
-    {
-        // @formatter:off
+	@Before
+	public void setUp() {
+		MockitoAnnotations.initMocks(this);
+		mvc = MockMvcBuilders.webAppContextSetup(context)
+				.addFilter(springSecurityFilterChain).build();
+	}
+
+	@Test
+	public void greetingUnauthorized() throws Exception {
+		// @formatter:off
 		mvc.perform(get("/greeting")
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isUnauthorized())
 				.andExpect(jsonPath("$.error", is("unauthorized")));
 		// @formatter:on
-    }
+	}
 
-    private String getAccessToken(String username, String password) throws Exception
-    {
-        String authorization = "Basic " + new String(Base64Utils.encode("clientapp:123456".getBytes()));
-        String contentType = MediaType.APPLICATION_JSON + ";charset=UTF-8";
+	private String getAccessToken(String username, String password) throws Exception {
+		String authorization = "Basic "
+				+ new String(Base64Utils.encode("clientapp:123456".getBytes()));
+		String contentType = MediaType.APPLICATION_JSON + ";charset=UTF-8";
 
-        // @formatter:off
+		// @formatter:off
 		String content = mvc
 				.perform(
 						post("/oauth/token")
@@ -95,15 +108,14 @@ public class GreetingControllerTest
 
 		// @formatter:on
 
-        return content.substring(17, 53);
-    }
+		return content.substring(17, 53);
+	}
 
-    @Test
-    public void greetingAuthorized() throws Exception
-    {
-        String accessToken = getAccessToken("roy", "spring");
+	@Test
+	public void greetingAuthorized() throws Exception {
+		String accessToken = getAccessToken("roy", "spring");
 
-        // @formatter:off
+		// @formatter:off
 		mvc.perform(get("/greeting")
 				.header("Authorization", "Bearer " + accessToken))
 				.andExpect(status().isOk())
@@ -111,7 +123,7 @@ public class GreetingControllerTest
 				.andExpect(jsonPath("$.content", is("Hello, Roy!")));
 		// @formatter:on
 
-        // @formatter:off
+		// @formatter:off
 		mvc.perform(get("/greeting")
 				.header("Authorization", "Bearer " + accessToken))
 				.andExpect(status().isOk())
@@ -119,34 +131,32 @@ public class GreetingControllerTest
 				.andExpect(jsonPath("$.content", is("Hello, Roy!")));
 		// @formatter:on
 
-        // @formatter:off
+		// @formatter:off
 		mvc.perform(get("/greeting")
 				.header("Authorization", "Bearer " + accessToken))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.id", is(3)))
 				.andExpect(jsonPath("$.content", is("Hello, Roy!")));
 		// @formatter:on
-    }
+	}
 
-    @Test
-    public void usersEndpointAuthorized() throws Exception
-    {
-        // @formatter:off
+	@Test
+	public void usersEndpointAuthorized() throws Exception {
+		// @formatter:off
 		mvc.perform(get("/users")
 				.header("Authorization", "Bearer " + getAccessToken("roy", "spring")))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$", hasSize(3)));
 		// @formatter:on
-    }
+	}
 
-    @Test
-    public void usersEndpointAccessDenied() throws Exception
-    {
-        // @formatter:off
+	@Test
+	public void usersEndpointAccessDenied() throws Exception {
+		// @formatter:off
 		mvc.perform(get("/users")
 				.header("Authorization", "Bearer " + getAccessToken("craig", "spring")))
 				.andExpect(status().is(403));
 		// @formatter:on
-    }
+	}
 
 }
