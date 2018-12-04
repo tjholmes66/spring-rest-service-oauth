@@ -1,4 +1,4 @@
-package hello.controller;
+package com.carecentrix.security.app.controller;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;

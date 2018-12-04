@@ -1,11 +1,11 @@
-package hello;
+package com.carecentrix.security.app;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
-@ComponentScan("hello")
+@ComponentScan("com.carecentrix.security")
 public class SpringSecurityApplication
 {
 

@@ -1,4 +1,4 @@
-package hello.config;
+package com.carecentrix.security.app.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -12,12 +12,12 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 
-import hello.service.CustomUserDetailsService;
+import com.carecentrix.security.app.service.CustomUserDetailsService;
 
 @Configuration
 @EnableWebSecurity
 @ComponentScan(basePackages =
-{ "hello" })
+{ "com.carecentrix.security" })
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter
 {

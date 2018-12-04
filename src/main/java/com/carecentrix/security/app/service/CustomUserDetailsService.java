@@ -1,4 +1,4 @@
-package hello.service;
+package com.carecentrix.security.app.service;
 
 import java.util.Collection;
 
@@ -9,8 +9,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import hello.entity.User;
-import hello.repository.UserRepository;
+import com.carecentrix.security.app.entity.User;
+import com.carecentrix.security.app.repository.UserRepository;
 
 @Service("userDetailsService")
 public class CustomUserDetailsService implements UserDetailsService

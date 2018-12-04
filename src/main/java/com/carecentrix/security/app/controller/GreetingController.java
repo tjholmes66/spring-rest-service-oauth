@@ -1,4 +1,4 @@
-package hello.controller;
+package com.carecentrix.security.app.controller;
 
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -6,8 +6,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import hello.entity.User;
-import hello.service.dto.Greeting;
+import com.carecentrix.security.app.entity.User;
+import com.carecentrix.security.app.service.dto.Greeting;
 
 @RestController
 public class GreetingController

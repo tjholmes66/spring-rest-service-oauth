@@ -1,4 +1,4 @@
-package hello.controller;
+package com.carecentrix.security.app.controller;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;

@@ -1,4 +1,4 @@
-package hello.entity;
+package com.carecentrix.security.app.entity;
 
 import java.util.HashSet;
 import java.util.Set;

@@ -1,8 +1,8 @@
-package hello.config;
+package com.carecentrix.security.app.config;
 
 import org.springframework.boot.builder.SpringApplicationBuilder;
 
-import hello.SpringSecurityApplication;
+import com.carecentrix.security.app.SpringSecurityApplication;
 
 public class WebInitializer extends org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 {

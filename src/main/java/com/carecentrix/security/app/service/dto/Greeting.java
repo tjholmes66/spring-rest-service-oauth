@@ -1,4 +1,4 @@
-package hello.service.dto;
+package com.carecentrix.security.app.service.dto;
 
 public class Greeting
 {
